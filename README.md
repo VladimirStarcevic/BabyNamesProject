@@ -1,7 +1,5 @@
 # BabyNames
 
-# BabyNames
-
 A JavaFX application for analyzing baby name data, including ranking, statistics, and historical trends.
 
 ## Overview
