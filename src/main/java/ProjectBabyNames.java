@@ -10,6 +10,9 @@ import edu.duke.FileResource;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import java.io.File;
+import java.net.URL;
+
 /**
  * This class represents a JavaFX application for analyzing baby names data.
  */
@@ -21,10 +24,22 @@ public class ProjectBabyNames extends Application {
      * @return A CSVParser object.
      */
     private CSVParser getParser(int year) {
-        String fileName = "test-data/yob" + year + "short.csv"; // The file name of the CSV data
-        //String fileName = "data/yob" + year + ".csv";
-        FileResource fileResource = new FileResource(fileName);
-        return fileResource.getCSVParser(false); // Returns the CSV parser object
+        String fileName = "/test-data/yob" + year + ".csv"; // The file name of the CSV data
+        URL resource = this.getClass().getResource(fileName);
+        System.out.println("Classpath: " + this.getClass().getResource("/"));
+        System.out.println("Resource URL: " + resource);
+        if (resource == null) {
+            System.out.println("Resource not found: " + fileName);
+            return null;
+        }
+        try {
+            File file = new File(resource.toURI());
+            FileResource fileResource = new FileResource(file);
+            return fileResource.getCSVParser(false);
+        } catch (Exception e) {
+            System.out.println("Error converting URL to File: " + e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -307,7 +322,12 @@ public class ProjectBabyNames extends Application {
         root.setPadding(new Insets(20, 20, 20, 20)); // Set padding for the layout
         Scene scene = new Scene(root, 600, 400); // Create a scene with the VBox layout
         primaryStage.setTitle("Baby Names Calculator"); // Set the title of the primary stage
-        scene.getStylesheets().add("styles.css"); // Add a stylesheet to the scene
+        URL cssUrl = getClass().getResource("/styles.css");
+        if (cssUrl != null) {
+            scene.getStylesheets().add(cssUrl.toExternalForm());
+        } else {
+            System.out.println("Warning: styles.css not found in classpath");
+        } // Add a stylesheet to the scene
         primaryStage.setScene(scene); // Set the scene for the primary stage
         primaryStage.show(); // Show the primary stage
     }
@@ -320,15 +340,4 @@ public class ProjectBabyNames extends Application {
         launch(args); // Launches the JavaFX application
     }
 
-    // The following code is commented out and was used for testing purposes
-    // public static void main(String[] ignoredArgs) {
-    //     ProjectBabyNames projectBabyNames = new ProjectBabyNames();
-    //     //projectBabyNames.testTotalBirths();
-    //     projectBabyNames.testGetRank();
-    //     //projectBabyNames.testGetName();
-    //     //projectBabyNames.testWhatIsNameInYear();
-    //     //projectBabyNames.testBestYear();
-    //     //projectBabyNames.testAverageRank();
-    //     //projectBabyNames.testTotalBirthsRankedHigher();
-    // }
 }
