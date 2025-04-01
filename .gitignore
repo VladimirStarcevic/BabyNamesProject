@@ -32,4 +32,5 @@ bin/
 
 ### Custom ###
 data/
-data.zip
+data.ziptarget/
+lib/
